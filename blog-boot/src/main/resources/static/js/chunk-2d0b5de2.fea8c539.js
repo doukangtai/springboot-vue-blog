@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0b5de2"],{"1b72":function(e,n,t){"use strict";t.r(n);var a=function(){var e=this,n=e.$createElement,t=e._self._c||n;return t("div",[e._v("更新信息页")])},c=[],u={name:"UpdateInfo"},d=u,o=t("2877"),r=Object(o["a"])(d,a,c,!1,null,"292d0a16",null);n["default"]=r.exports}}]);
+//# sourceMappingURL=chunk-2d0b5de2.fea8c539.js.map

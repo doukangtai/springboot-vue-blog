@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dkt.blogboot.mapper.CategoryMapper">
+  <resultMap id="BaseResultMap" type="com.dkt.blogboot.entity.Category">
+    <!--@mbg.generated-->
+    <!--@Table category-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="category" jdbcType="VARCHAR" property="category" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, category
+  </sql>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select * from category;
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from category
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from category
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.dkt.blogboot.entity.Category" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into category (category)
+    values (#{category,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.dkt.blogboot.entity.Category" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into category
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="category != null">
+        category,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="category != null">
+        #{category,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dkt.blogboot.entity.Category">
+    <!--@mbg.generated-->
+    update category
+    <set>
+      <if test="category != null">
+        category = #{category,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dkt.blogboot.entity.Category">
+    <!--@mbg.generated-->
+    update category
+    set category = #{category,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

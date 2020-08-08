@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dkt.blogboot.mapper.ArticleMapper">
+  <resultMap id="BaseResultMap" type="com.dkt.blogboot.entity.Article">
+    <!--@mbg.generated-->
+    <!--@Table article-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="date" jdbcType="TIMESTAMP" property="date" />
+    <association property="category" javaType="com.dkt.blogboot.entity.Category">
+      <id column="cid" property="id"></id>
+      <result column="ccategory" property="category"></result>
+    </association>
+    <collection property="tags" ofType="com.dkt.blogboot.entity.Tag">
+      <id column="tid" property="id"></id>
+      <result column="ttag" property="tag"></result>
+    </collection>
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, title, content, `date`
+  </sql>
+  <select id="getArticleByTagId" resultMap="BaseResultMap">
+    SELECT * FROM article WHERE id IN(SELECT aid FROM article_tag WHERE tid=#{id}) ORDER BY id DESC
+  </select>
+  <select id="getArticleByCategoryId" resultMap="BaseResultMap">
+    SELECT * FROM article WHERE id IN(SELECT aid FROM article_category WHERE cid=#{id}) ORDER BY id DESC
+  </select>
+  <select id="getArticleById" resultMap="BaseResultMap">
+    SELECT a.*,t.id tid,t.tag ttag,c.id cid,c.category ccategory FROM article a LEFT JOIN article_category ac ON ac.aid=a.id LEFT JOIN category c ON c.id=ac.cid LEFT JOIN article_tag at ON at.aid=a.id LEFT JOIN tag t ON t.id=at.tid WHERE a.id=#{id} ORDER BY a.id DESC
+  </select>
+  <select id="getArticleByTitle" resultMap="BaseResultMap">
+    SELECT a.*,t.id tid,t.tag ttag,c.id cid,c.category ccategory FROM article a LEFT JOIN article_category ac ON ac.aid=a.id LEFT JOIN category c ON c.id=ac.cid LEFT JOIN article_tag at ON at.aid=a.id LEFT JOIN tag t ON t.id=at.tid WHERE a.title LIKE concat('%', #{title}, '%') ORDER BY a.id DESC
+  </select>
+  <select id="getAllArticle" resultMap="BaseResultMap">
+    SELECT a.*,t.id tid,t.tag ttag,c.id cid,c.category ccategory FROM article a LEFT JOIN article_category ac ON ac.aid=a.id LEFT JOIN category c ON c.id=ac.cid LEFT JOIN article_tag at ON at.aid=a.id LEFT JOIN tag t ON t.id=at.tid ORDER BY a.id DESC
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from article
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from article
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.dkt.blogboot.entity.Article" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into article (title, content, `date`)
+    values (#{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{date,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.dkt.blogboot.entity.Article" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into article
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="title != null">
+        title,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="date != null">
+        `date`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        #{date,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dkt.blogboot.entity.Article">
+    <!--@mbg.generated-->
+    update article
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        `date` = #{date,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dkt.blogboot.entity.Article">
+    <!--@mbg.generated-->
+    update article
+    set title = #{title,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
