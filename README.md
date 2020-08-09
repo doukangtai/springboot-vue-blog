@@ -33,23 +33,23 @@ Github地址https://github.com/doukangtai/springboot-vue-blog
 
 使用Markdown写文章界面
 
-![admin-write-article](.\resources\img\admin-write-article.png)
+![admin-write-article](https://github.com/doukangtai/springboot-vue-blog/blob/master/resources/img/admin-write-article.png)
 
 文章列表页
 
-![article-list](.\resources\img\article-list.png)
+![article-list](https://github.com/doukangtai/springboot-vue-blog/blob/master/resources/img/article-list.png)
 
 文章详情页
 
-![article-detail](.\resources\img\article-detail.png)
+![article-detail](https://github.com/doukangtai/springboot-vue-blog/blob/master/resources/img/article-detail.png)
 
 时间线——归档
 
-![timeline](.\resources\img\timeline.png)
+![timeline](https://github.com/doukangtai/springboot-vue-blog/blob/master/resources/img/timeline.png)
 
 标签页
 
-![tag](.\resources\img\tag.png)
+![tag](https://github.com/doukangtai/springboot-vue-blog/blob/master/resources/img/tag.png)
 
 ### 部署
 
