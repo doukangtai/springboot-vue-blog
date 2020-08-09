@@ -29,27 +29,27 @@ Github地址https://github.com/doukangtai/springboot-vue-blog
 
 可以根据标题查询、编辑、删除文章
 
-![admin-article-list](E:\project\idea-project\blog\resources\img\admin-article-list.png)
+![admin-article-list](.\resources\img\admin-article-list.png)
 
 使用Markdown写文章界面
 
-![admin-write-article](E:\project\idea-project\blog\resources\img\admin-write-article.png)
+![admin-write-article](.\resources\img\admin-write-article.png)
 
 文章列表页
 
-![article-list](E:\project\idea-project\blog\resources\img\article-list.png)
+![article-list](.\resources\img\article-list.png)
 
 文章详情页
 
-![article-detail](E:\project\idea-project\blog\resources\img\article-detail.png)
+![article-detail](.\resources\img\article-detail.png)
 
 时间线——归档
 
-![timeline](E:\project\idea-project\blog\resources\img\timeline.png)
+![timeline](.\resources\img\timeline.png)
 
 标签页
 
-![tag](E:\project\idea-project\blog\resources\img\tag.png)
+![tag](.\resources\img\tag.png)
 
 ### 部署
 
