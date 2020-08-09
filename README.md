@@ -29,7 +29,7 @@ Github地址https://github.com/doukangtai/springboot-vue-blog
 
 可以根据标题查询、编辑、删除文章
 
-![admin-article-list](.\resources\img\admin-article-list.png)
+![admin-article-list](https://github.com/doukangtai/springboot-vue-blog/blob/master/resources/img/admin-article-list.png)
 
 使用Markdown写文章界面
 
