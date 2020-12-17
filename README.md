@@ -8,6 +8,8 @@
 
 Github地址https://github.com/doukangtai/springboot-vue-blog
 
+前端项目地址https://github.com/doukangtai/vue-blog
+
 ### 技术栈
 
 ##### 后端
