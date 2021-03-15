@@ -9,3 +9,7 @@ server:
 mybatis:
 #  config-location: classpath:/mybatis/mybatis-config.xml
   mapper-locations: classpath:/mybatis/mapper/*.xml
+
+upload-img-path:
+  windows: C:/Users/DKT/Desktop/blog/images/
+  linux: /root/upload/blog/images/

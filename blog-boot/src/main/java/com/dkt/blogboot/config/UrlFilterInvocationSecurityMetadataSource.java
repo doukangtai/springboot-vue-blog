@@ -26,9 +26,7 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
         List<String> urlList = new ArrayList<>();
         urlList.add("/reg");
         urlList.add("/uploadImg");
-        urlList.add("/addCategory");
-        urlList.add("/addTag");
-        urlList.add("/addArticle");
+        urlList.add("/add*/**");
         urlList.add("/delete*/**");
         for (int i = 0; i < urlList.size(); i++) {
             if (antPathMatcher.match(urlList.get(i), requestUrl)) {

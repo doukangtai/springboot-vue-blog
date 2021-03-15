@@ -6,6 +6,7 @@ import com.dkt.blogboot.service.ArticleService;
 import com.dkt.blogboot.service.CategoryService;
 import com.dkt.blogboot.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,31 +29,33 @@ public class ArticleController {
     TagService tagService;
     @Autowired
     ArticleService articleService;
+    @Value("${upload-img-path.windows}")
+    String uploadImgPathWindows;
+    @Value("${upload-img-path.linux}")
+    String uploadImgPathLinux;
 
     @PostMapping("/uploadImg")
-    public ResponseBean upload(HttpServletRequest httpServletRequest, MultipartFile image) {
-        String filePath = httpServletRequest.getServletContext().getRealPath("/uploadImg");
-        File file = new File(filePath);
-        if (!file.exists()) {
-            file.mkdirs();
+    public ResponseBean upload(HttpServletRequest request, MultipartFile image) {
+        String originalFilename = image.getOriginalFilename();
+        String newImageName = UUID.randomUUID().toString() + originalFilename;
+        String accessUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/upload/image/" + newImageName;
+        String newImagePath = "";
+        String osName = System.getProperty("os.name");
+        if ("Windows 10".equals(osName)) {
+            newImagePath = uploadImgPathWindows + newImageName;
+        } else {
+            newImagePath = uploadImgPathLinux + newImageName;
         }
-        String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
-        String fileUrl = httpServletRequest.getScheme()
-                + "://"
-                + httpServletRequest.getServerName()
-                + ":"
-                + httpServletRequest.getServerPort()
-                + httpServletRequest.getContextPath()
-                + "/uploadImg/"
-                + fileName;
+        File imageFile = new File(newImagePath);
+        if (!imageFile.getParentFile().exists()) {
+            imageFile.getParentFile().mkdirs();
+        }
         try {
-            File file1 = new File(file, fileName);
-            image.transferTo(file1);
-            return new ResponseBean("success", fileUrl);
+            image.transferTo(imageFile);
+            return new ResponseBean("success", accessUrl);
         } catch (IOException e) {
-            e.printStackTrace();
+            return new ResponseBean("error", "IO异常，上传失败");
         }
-        return new ResponseBean("error", "上传失败");
     }
 
     @PostMapping("/addArticle")
