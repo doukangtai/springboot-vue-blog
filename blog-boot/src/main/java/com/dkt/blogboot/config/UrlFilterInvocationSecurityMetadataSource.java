@@ -29,7 +29,7 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
         urlList.add("/addCategory");
         urlList.add("/addTag");
         urlList.add("/addArticle");
-        urlList.add("/deleteArticleById/*");
+        urlList.add("/delete*/**");
         for (int i = 0; i < urlList.size(); i++) {
             if (antPathMatcher.match(urlList.get(i), requestUrl)) {
                 return SecurityConfig.createList("ROLE_login");

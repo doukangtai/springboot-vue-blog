@@ -57,12 +57,7 @@ public class ArticleController {
 
     @PostMapping("/addArticle")
     public ResponseBean addArticle(Article article) {
-        int insert = articleService.addArticle(article);
-        if (insert == 1) {
-            return new ResponseBean("success", "添加文章成功");
-        } else {
-            return new ResponseBean("error", "添加文章失败");
-        }
+        return articleService.addArticle(article);
     }
 
     @GetMapping("/getAllArticle")
@@ -77,19 +72,12 @@ public class ArticleController {
 
     @GetMapping("/getArticleById/{id}")
     public Article getArticleById(@PathVariable int id) {
-        Article article = articleService.getArticleById(id);
-        System.out.println(article);
-        return article;
+        return articleService.getArticleById(id);
     }
 
     @DeleteMapping("/deleteArticleById/{id}")
     public ResponseBean deleteArticleById(@PathVariable int id) {
-        int i = articleService.deleteArticleById(id);
-        if (i == 1) {
-            return new ResponseBean("success", "删除成功");
-        } else {
-            return new ResponseBean("error", "删除失败");
-        }
+        return articleService.deleteArticleById(id);
     }
 
     @GetMapping("/getAllArticleSubstringContent")

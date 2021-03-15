@@ -4,6 +4,8 @@ import com.dkt.blogboot.entity.ArticleTag;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
 @Author 窦康泰
 @Date 2020-08-05 15:37
@@ -25,4 +27,6 @@ public interface ArticleTagMapper {
     int updateByPrimaryKeySelective(ArticleTag record);
 
     int updateByPrimaryKey(ArticleTag record);
+
+    List<ArticleTag> selectByTid(int tid);
 }

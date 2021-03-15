@@ -80,4 +80,8 @@
       tid = #{tid,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByTid" resultMap="BaseResultMap">
+    SELECT * FROM article_tag WHERE tid=#{tid}
+  </select>
 </mapper>

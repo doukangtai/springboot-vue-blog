@@ -61,4 +61,8 @@
     set tag = #{tag,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByTag" resultMap="BaseResultMap">
+    SELECT * FROM tag WHERE tag=#{tag,jdbcType=VARCHAR}
+  </select>
 </mapper>

@@ -6,9 +6,7 @@ import com.dkt.blogboot.service.ArticleService;
 import com.dkt.blogboot.service.CategoryService;
 import com.dkt.blogboot.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,11 +31,11 @@ public class CategoryController {
 
     @PostMapping("/addCategory")
     public ResponseBean addCategory(Category category) {
-        int insert = categoryService.insert(category);
-        if (insert == 1) {
-            return new ResponseBean("success", "添加分类成功");
-        }
-        return new ResponseBean("error", "添加分类失败");
+        return categoryService.insert(category);
     }
 
+    @DeleteMapping("/deleteCategory/{cid}")
+    public ResponseBean deleteCategory(@PathVariable("cid") int cid) {
+        return categoryService.deleteCategory(cid);
+    }
 }

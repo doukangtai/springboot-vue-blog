@@ -61,4 +61,8 @@
     set category = #{category,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByCategory" resultMap="BaseResultMap">
+    SELECT * FROM category WHERE category=#{category,jdbcType=VARCHAR}
+  </select>
 </mapper>

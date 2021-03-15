@@ -11,6 +11,15 @@ public class ArticleTag {
 
     private Integer tid;
 
+    @Override
+    public String toString() {
+        return "ArticleTag{" +
+                "id=" + id +
+                ", aid=" + aid +
+                ", tid=" + tid +
+                '}';
+    }
+
     public ArticleTag() {
     }
 

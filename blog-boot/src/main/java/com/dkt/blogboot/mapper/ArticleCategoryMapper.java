@@ -3,6 +3,8 @@ package com.dkt.blogboot.mapper;
 import com.dkt.blogboot.entity.ArticleCategory;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
 @Author 窦康泰
 @Date 2020-08-05 15:37
@@ -22,4 +24,6 @@ public interface ArticleCategoryMapper {
     int updateByPrimaryKeySelective(ArticleCategory record);
 
     int updateByPrimaryKey(ArticleCategory record);
+
+    List<ArticleCategory> selectByCid(int cid);
 }

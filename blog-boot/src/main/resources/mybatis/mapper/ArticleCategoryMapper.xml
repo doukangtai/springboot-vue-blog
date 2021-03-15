@@ -73,4 +73,8 @@
       cid = #{cid,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectByCid" resultMap="BaseResultMap">
+    SELECT * FROM article_category WHERE cid=#{cid}
+    </select>
 </mapper>
