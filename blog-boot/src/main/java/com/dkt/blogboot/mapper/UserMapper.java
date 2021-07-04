@@ -1,13 +1,13 @@
 package com.dkt.blogboot.mapper;
 
 import com.dkt.blogboot.entity.User;
-import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 /**
 @Author 窦康泰
 @Date 2020-08-01 12:59
 */
-@Mapper
+@Repository
 public interface UserMapper {
     User loadUserByUsername(String username);
 

@@ -1,7 +1,7 @@
 package com.dkt.blogboot.mapper;
 
 import com.dkt.blogboot.entity.Category;
-import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import java.util.List;
 @Author 窦康泰
 @Date 2020-08-04 18:33
 */
-@Mapper
+@Repository
 public interface CategoryMapper {
     List<Category> selectAll();
 

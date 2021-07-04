@@ -1,9 +1,11 @@
 package com.dkt.blogboot;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
+@MapperScan(basePackages = {"com.dkt.blogboot.mapper"})
 public class BlogBootApplication {
 
     public static void main(String[] args) {

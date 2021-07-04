@@ -1,15 +1,22 @@
 spring:
   datasource:
-    type: com.alibaba.druid.pool.DruidDataSource
     username: root
     password: root
     url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    host: localhost
+    port: 6379
+    password:
 server:
   port: 8081
 mybatis:
-#  config-location: classpath:/mybatis/mybatis-config.xml
   mapper-locations: classpath:/mybatis/mapper/*.xml
 
 upload-img-path:
   windows: C:/Users/DKT/Desktop/blog/images/
   linux: /root/upload/blog/images/
+
+logging:
+  level:
+    com.dkt.blogboot.mapper: trace
