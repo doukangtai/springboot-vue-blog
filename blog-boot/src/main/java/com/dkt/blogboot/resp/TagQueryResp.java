@@ -1,10 +1,10 @@
-package com.dkt.blogboot.entity;
+package com.dkt.blogboot.resp;
 
 /**
 *@author 窦康泰
 *@date 2021/07/04
 */
-public class Tag {
+public class TagQueryResp {
     private Integer id;
 
     private String tag;

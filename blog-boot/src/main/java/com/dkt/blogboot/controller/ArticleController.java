@@ -1,7 +1,10 @@
 package com.dkt.blogboot.controller;
 
-import com.dkt.blogboot.entity.Article;
-import com.dkt.blogboot.entity.ResponseBean;
+import com.dkt.blogboot.req.ArticleInsertReq;
+import com.dkt.blogboot.req.ArticleQueryReq;
+import com.dkt.blogboot.resp.ArticleQueryResp;
+import com.dkt.blogboot.resp.CommonResp;
+import com.dkt.blogboot.resp.PageResp;
 import com.dkt.blogboot.service.ArticleService;
 import com.dkt.blogboot.service.CategoryService;
 import com.dkt.blogboot.service.TagService;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -21,6 +25,7 @@ import java.util.UUID;
  * @Date 2020-08-04 18:13
  */
 @RestController
+@RequestMapping("/article")
 public class ArticleController {
 
     @Autowired
@@ -34,10 +39,71 @@ public class ArticleController {
     @Value("${upload-img-path.linux}")
     String uploadImgPathLinux;
 
-    @PostMapping("/uploadImg")
-    public ResponseBean upload(HttpServletRequest request, MultipartFile image) {
+    @GetMapping("/list/substring")
+    public CommonResp listSubstringContent(@Valid @RequestBody ArticleQueryReq req) {
+        CommonResp<PageResp<ArticleQueryResp>> resp = new CommonResp<>();
+        PageResp<ArticleQueryResp> pageResp = articleService.listSubstringContent(req);
+        resp.setContent(pageResp);
+        return resp;
+    }
+
+    @GetMapping("/{id}")
+    public CommonResp getArticleById(@PathVariable("id") Integer id) {
+        CommonResp<ArticleQueryResp> resp = new CommonResp<>();
+        resp.setContent(articleService.getArticleById(id));
+        return resp;
+    }
+
+    @GetMapping("/category/{id}")
+    public CommonResp getArticleByCategoryId(@PathVariable("id") int id) {
+        List<ArticleQueryResp> articleQueryResps = articleService.getArticleByCategoryId(id);
+        CommonResp<List<ArticleQueryResp>> resp = new CommonResp<>();
+        resp.setContent(articleQueryResps);
+        return resp;
+    }
+
+    @GetMapping("/tag/{id}")
+    public CommonResp getArticleByTagId(@PathVariable("id") int id) {
+        CommonResp<List<ArticleQueryResp>> resp = new CommonResp<>();
+        List<ArticleQueryResp> articleQueryResps = articleService.getArticleByTagId(id);
+        resp.setContent(articleQueryResps);
+        return resp;
+    }
+
+    @GetMapping("/list")
+    public CommonResp getAllArticle() {
+        List<ArticleQueryResp> articleQueryResps = articleService.list();
+        CommonResp<List<ArticleQueryResp>> resp = new CommonResp<>();
+        resp.setContent(articleQueryResps);
+        return resp;
+    }
+
+    @GetMapping("/title")
+    public CommonResp getAllArticleByTitle(@Valid @RequestBody ArticleQueryReq req) {
+        PageResp<ArticleQueryResp> pageResp = articleService.getAllArticleByTitle(req);
+        CommonResp<PageResp<ArticleQueryResp>> resp = new CommonResp<>();
+        resp.setContent(pageResp);
+        return resp;
+    }
+
+    @PostMapping("/insert")
+    public CommonResp insert(@Valid @RequestBody ArticleInsertReq req) {
+        return articleService.save(req);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public CommonResp delete(@PathVariable("id") Integer id) {
+        CommonResp<Object> resp = new CommonResp<>();
+        articleService.delete(id);
+        return resp;
+    }
+
+
+    @PostMapping("/upload/image")
+    public CommonResp upload(HttpServletRequest request, MultipartFile image) {
         String originalFilename = image.getOriginalFilename();
-        String newImageName = UUID.randomUUID().toString() + originalFilename;
+        String suffix = originalFilename.substring(originalFilename.lastIndexOf('.'));
+        String newImageName = UUID.randomUUID().toString() + suffix;
         String accessUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/upload/image/" + newImageName;
         String newImagePath = "";
         String osName = System.getProperty("os.name");
@@ -50,52 +116,16 @@ public class ArticleController {
         if (!imageFile.getParentFile().exists()) {
             imageFile.getParentFile().mkdirs();
         }
+        CommonResp<Object> resp = new CommonResp<>();
         try {
             image.transferTo(imageFile);
-            return new ResponseBean("success", accessUrl);
+            resp.setContent(accessUrl);
+            return resp;
         } catch (IOException e) {
-            return new ResponseBean("error", "IO异常，上传失败");
+            resp.setSuccess(false);
+            return resp;
         }
     }
 
-    @PostMapping("/addArticle")
-    public ResponseBean addArticle(Article article) {
-        return articleService.addArticle(article);
-    }
-
-    @GetMapping("/getAllArticle")
-    public List<Article> getAllArticle() {
-        return articleService.getAllArticle();
-    }
-
-    @GetMapping("/getArticleByTitle/{title}")
-    public List<Article> getArticleByTitle(@PathVariable String title) {
-        return articleService.getArticleByTitle(title);
-    }
-
-    @GetMapping("/getArticleById/{id}")
-    public Article getArticleById(@PathVariable int id) {
-        return articleService.getArticleById(id);
-    }
-
-    @DeleteMapping("/deleteArticleById/{id}")
-    public ResponseBean deleteArticleById(@PathVariable int id) {
-        return articleService.deleteArticleById(id);
-    }
-
-    @GetMapping("/getAllArticleSubstringContent")
-    public List<Article> getAllArticleSubstringContent() {
-        return articleService.getAllArticleSubstringContent();
-    }
-
-    @GetMapping("/getArticleByCategoryId/{categoryId}")
-    public List<Article> getArticleByCategoryId(@PathVariable int categoryId) {
-        return articleService.getArticleByCategoryId(categoryId);
-    }
-
-    @GetMapping("/getArticleByTagId/{tagId}")
-    public List<Article> getArticleByTagId(@PathVariable int tagId) {
-        return articleService.getArticleByTagId(tagId);
-    }
 
 }

@@ -1,18 +1,15 @@
 package com.dkt.blogboot.mapper;
-
 import com.dkt.blogboot.entity.Tag;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
-@Author 窦康泰
-@Date 2020-08-04 18:33
+*@author 窦康泰
+*@date 2021/07/04
 */
 @Repository
 public interface TagMapper {
-    List<Tag> selectAll();
-
     int deleteByPrimaryKey(Integer id);
 
     int insert(Tag record);
@@ -25,5 +22,7 @@ public interface TagMapper {
 
     int updateByPrimaryKey(Tag record);
 
-    List<Tag> selectByTag(String tag);
+    List<Tag> selectAll();
+
+
 }

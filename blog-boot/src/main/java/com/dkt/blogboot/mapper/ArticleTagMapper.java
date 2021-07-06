@@ -1,5 +1,4 @@
 package com.dkt.blogboot.mapper;
-
 import com.dkt.blogboot.entity.ArticleTag;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -7,15 +6,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
-@Author 窦康泰
-@Date 2020-08-05 15:37
+*@author 窦康泰
+*@date 2021/07/04
 */
 @Repository
 public interface ArticleTagMapper {
-    int deleteByAid(int aid);
-
-    int inserts(@Param("aid") int aid, @Param("tid") int[] tid);
-
     int deleteByPrimaryKey(Integer id);
 
     int insert(ArticleTag record);
@@ -28,5 +23,9 @@ public interface ArticleTagMapper {
 
     int updateByPrimaryKey(ArticleTag record);
 
-    List<ArticleTag> selectByTid(int tid);
+    int deleteByAid(@Param("aid")Integer aid);
+
+    List<ArticleTag> selectByTid(@Param("tid")Integer tid);
+
+
 }

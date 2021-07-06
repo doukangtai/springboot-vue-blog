@@ -1,13 +1,15 @@
 package com.dkt.blogboot.controller;
 
-import com.dkt.blogboot.entity.ResponseBean;
-import com.dkt.blogboot.entity.Tag;
+import com.dkt.blogboot.req.TagInsertReq;
+import com.dkt.blogboot.resp.CommonResp;
+import com.dkt.blogboot.resp.TagQueryResp;
 import com.dkt.blogboot.service.ArticleService;
 import com.dkt.blogboot.service.CategoryService;
 import com.dkt.blogboot.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -15,6 +17,7 @@ import java.util.List;
  * @Date 2020-08-08 20:37
  */
 @RestController
+@RequestMapping("/tag")
 public class TagController {
 
     @Autowired
@@ -24,18 +27,23 @@ public class TagController {
     @Autowired
     ArticleService articleService;
 
-    @GetMapping("/getAllTag")
-    public List<Tag> selectAllTag() {
-        return tagService.selectAll();
+    @GetMapping("/list")
+    public CommonResp selectAllTag() {
+        List<TagQueryResp> tagQueryResps = tagService.selectAll();
+        CommonResp<List<TagQueryResp>> resp = new CommonResp<>();
+        resp.setContent(tagQueryResps);
+        return resp;
     }
 
-    @PostMapping("/addTag")
-    public ResponseBean addTag(Tag tag) {
-        return tagService.insert(tag);
+    @PostMapping("/add")
+    public CommonResp addTag(@Valid @RequestBody TagInsertReq req) {
+        CommonResp<Object> resp = new CommonResp<>();
+        tagService.insert(req);
+        return resp;
     }
 
-    @DeleteMapping("/deleteTag/{id}")
-    public ResponseBean deleteTag(@PathVariable("id") int id) {
-        return tagService.deleteTag(id);
+    @DeleteMapping("/delete/{id}")
+    public CommonResp deleteTag(@PathVariable("id") Integer id) {
+        return tagService.delete(id);
     }
 }

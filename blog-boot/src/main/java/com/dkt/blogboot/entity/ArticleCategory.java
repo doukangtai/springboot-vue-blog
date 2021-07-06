@@ -1,8 +1,8 @@
 package com.dkt.blogboot.entity;
 
 /**
-@Author 窦康泰
-@Date 2020-08-05 15:37
+*@author 窦康泰
+*@date 2021/07/04
 */
 public class ArticleCategory {
     private Integer id;
@@ -10,14 +10,6 @@ public class ArticleCategory {
     private Integer aid;
 
     private Integer cid;
-
-    public ArticleCategory() {
-    }
-
-    public ArticleCategory(Integer aid, Integer cid) {
-        this.aid = aid;
-        this.cid = cid;
-    }
 
     public Integer getId() {
         return id;

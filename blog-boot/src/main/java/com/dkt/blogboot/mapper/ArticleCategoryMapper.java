@@ -1,18 +1,16 @@
 package com.dkt.blogboot.mapper;
-
 import com.dkt.blogboot.entity.ArticleCategory;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
-@Author 窦康泰
-@Date 2020-08-05 15:37
+*@author 窦康泰
+*@date 2021/07/04
 */
 @Repository
 public interface ArticleCategoryMapper {
-    int deleteByAid(int aid);
-
     int deleteByPrimaryKey(Integer id);
 
     int insert(ArticleCategory record);
@@ -25,5 +23,9 @@ public interface ArticleCategoryMapper {
 
     int updateByPrimaryKey(ArticleCategory record);
 
-    List<ArticleCategory> selectByCid(int cid);
+    int deleteByAid(@Param("aid")Integer aid);
+
+    List<ArticleCategory> selectByCid(@Param("cid")Integer cid);
+
+
 }

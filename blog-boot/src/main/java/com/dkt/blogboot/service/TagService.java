@@ -1,13 +1,17 @@
 package com.dkt.blogboot.service;
 
 import com.dkt.blogboot.entity.ArticleTag;
-import com.dkt.blogboot.entity.ResponseBean;
 import com.dkt.blogboot.entity.Tag;
 import com.dkt.blogboot.mapper.ArticleTagMapper;
 import com.dkt.blogboot.mapper.TagMapper;
+import com.dkt.blogboot.req.TagInsertReq;
+import com.dkt.blogboot.resp.CommonResp;
+import com.dkt.blogboot.resp.TagQueryResp;
+import com.dkt.blogboot.util.CopyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -24,35 +28,26 @@ public class TagService {
     @Autowired
     ArticleTagMapper articleTagMapper;
 
-    public List<Tag> selectAll() {
-        return tagMapper.selectAll();
+    public List<TagQueryResp> selectAll() {
+        List<Tag> tags = tagMapper.selectAll();
+        return CopyUtil.copyList(tags, TagQueryResp.class);
     }
 
-    public ResponseBean insert(Tag record) {
-        if ("".equals(record.getTag()) || record.getTag() == null) {
-            return new ResponseBean("error", "标签不能为空");
-        }
-        List<Tag> tags = tagMapper.selectByTag(record.getTag());
-        if (tags.size() > 0) {
-            return new ResponseBean("error", "此标签存在，添加失败");
-        }
-        int insert = tagMapper.insert(record);
-        if (insert == 1) {
-            return new ResponseBean("success", "添加标签成功");
-        }
-        return new ResponseBean("error", "添加标签失败");
+    public void insert(TagInsertReq req) {
+        Tag tag = CopyUtil.copy(req, Tag.class);
+        tagMapper.insertSelective(tag);
     }
 
-    public ResponseBean deleteTag(int id) {
+    public CommonResp delete(Integer id) {
+        CommonResp<Object> resp = new CommonResp<>();
         List<ArticleTag> articleTags = articleTagMapper.selectByTid(id);
-        if (articleTags.size() <= 0) {
-            int i = tagMapper.deleteByPrimaryKey(id);
-            if (i > 0) {
-                return new ResponseBean("success", "删除标签成功");
-            } else {
-                return new ResponseBean("error", "未知错误，失败");
-            }
+        if (CollectionUtils.isEmpty(articleTags)) {
+            tagMapper.deleteByPrimaryKey(id);
+            resp.setMessage("删除标签成功");
+        } else {
+            resp.setSuccess(false);
+            resp.setMessage("标签有使用，删除失败");
         }
-        return new ResponseBean("error", "有使用此标签的文章，删除失败");
+        return resp;
     }
 }

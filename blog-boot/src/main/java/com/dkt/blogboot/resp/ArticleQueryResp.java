@@ -1,19 +1,29 @@
-package com.dkt.blogboot.entity;
+package com.dkt.blogboot.resp;
+
+import com.dkt.blogboot.entity.Category;
+import com.dkt.blogboot.entity.Tag;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
+import java.util.List;
 
 /**
 *@author 窦康泰
 *@date 2021/07/04
 */
-public class Article {
+public class ArticleQueryResp {
     private Integer id;
 
     private String title;
 
     private String content;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date date;
+
+    private Category category;
+
+    private List<Tag> tags;
 
     public Integer getId() {
         return id;
@@ -45,5 +55,21 @@ public class Article {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
     }
 }

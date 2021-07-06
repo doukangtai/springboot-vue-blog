@@ -2,16 +2,21 @@ package com.dkt.blogboot.service;
 
 import com.dkt.blogboot.entity.Article;
 import com.dkt.blogboot.entity.ArticleCategory;
-import com.dkt.blogboot.entity.ResponseBean;
+import com.dkt.blogboot.entity.ArticleTag;
 import com.dkt.blogboot.mapper.ArticleCategoryMapper;
 import com.dkt.blogboot.mapper.ArticleMapper;
 import com.dkt.blogboot.mapper.ArticleTagMapper;
+import com.dkt.blogboot.req.ArticleInsertReq;
+import com.dkt.blogboot.req.ArticleQueryReq;
+import com.dkt.blogboot.resp.ArticleQueryResp;
+import com.dkt.blogboot.resp.CommonResp;
+import com.dkt.blogboot.resp.PageResp;
+import com.dkt.blogboot.util.CopyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,99 +34,105 @@ public class ArticleService {
     @Autowired
     ArticleTagMapper articleTagMapper;
 
-    public ResponseBean addArticle(Article article) {
-        if (article.getId() == -1) {
-            article.setDate(new Date(new java.util.Date().getTime()));
-            if (article.getTagIdArr().length <= 0 || article.getCategoryId() <= 0 || "".equals(article.getContent()) || article.getContent() == null || "".equals(article.getTitle()) || article.getTitle() == null) {
-                return new ResponseBean("error", "标题、内容、分类、标签存在空值，添加失败");
-            }
-            int insert = articleMapper.insert(article);
-            ArticleCategory articleCategory = new ArticleCategory(article.getId(), article.getCategoryId());
-            int insert1 = articleCategoryMapper.insert(articleCategory);
-            int inserts = articleTagMapper.inserts(article.getId(), article.getTagIdArr());
-            if (insert >= 1 && insert1 >= 1 && inserts >= 1) {
-                return new ResponseBean("success", "添加文章成功");
-            } else {
-                return new ResponseBean("error", "添加文章失败");
-            }
-        } else {
-            if (article.getTagIdArr().length <= 0 || article.getCategoryId() <= 0 || "".equals(article.getContent()) || article.getContent() == null || "".equals(article.getTitle()) || article.getTitle() == null) {
-                return new ResponseBean("error", "标题、内容、分类、标签存在空值，添加失败");
-            }
-            int updateArticle = articleMapper.updateByPrimaryKey(article);
-            int deleteByAid = articleCategoryMapper.deleteByAid(article.getId());
-            ArticleCategory articleCategory = new ArticleCategory(article.getId(), article.getCategoryId());
-            int insert = articleCategoryMapper.insert(articleCategory);
-            int deleteByAid1 = articleTagMapper.deleteByAid(article.getId());
-            int inserts = articleTagMapper.inserts(article.getId(), article.getTagIdArr());
-            if (updateArticle >= 1 && insert >= 1 && inserts >= 1) {
-                return new ResponseBean("success", "修改文章成功");
-            } else {
-                return new ResponseBean("error", "修改文章失败");
-            }
-        }
-    }
-
-    public List<Article> getAllArticle() {
-        List<Article> allArticle = articleMapper.getAllArticle();
-        return formatDate(allArticle);
-    }
-
-    public List<Article> getArticleByTitle(String title) {
-        List<Article> articleList = articleMapper.getArticleByTitle(title);
-        return formatDate(articleList);
-    }
-
-    public List<Article> formatDate(List<Article> articleList) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        for (Article article : articleList) {
-            article.setTime(sdf.format(article.getDate()));
-        }
-        return articleList;
-    }
-
-    public Article formatDate(Article article) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        article.setTime(sdf.format(article.getDate()));
-        return article;
-    }
-
-    public Article getArticleById(int id) {
-        Article article = articleMapper.getArticleById(id);
-        return formatDate(article);
-    }
-
-    public ResponseBean deleteArticleById(int id) {
-        int deleteByAid = articleCategoryMapper.deleteByAid(id);
-        int deleteByAid1 = articleTagMapper.deleteByAid(id);
-        int deleteByPrimaryKey = articleMapper.deleteByPrimaryKey(id);
-        if (deleteByAid >= 1 && deleteByAid1 >= 1 && deleteByPrimaryKey >= 1) {
-            return new ResponseBean("success", "删除文章成功");
-        } else {
-            return new ResponseBean("error", "删除文章失败");
-        }
-    }
-
-    public List<Article> getAllArticleSubstringContent() {
-        List<Article> allArticle = articleMapper.getAllArticle();
-        for (Article article : allArticle) {
+    public PageResp<ArticleQueryResp> listSubstringContent(ArticleQueryReq req) {
+        int page = req.getPage();
+        int size = req.getSize();
+        List<ArticleQueryResp> articles = articleMapper.select(page * size, size);
+        for (ArticleQueryResp article : articles) {
             if (article.getContent().length() > 300) {
                 article.setContent(article.getContent().substring(0, 300));
-            } else {
-                article.setContent(article.getContent().substring(0, article.getContent().length()));
             }
         }
-        return formatDate(allArticle);
+        PageResp<ArticleQueryResp> pageResp = new PageResp<>();
+        pageResp.setTotal(articleMapper.count());
+        pageResp.setList(articles);
+        return pageResp;
     }
 
-    public List<Article> getArticleByCategoryId(int id) {
-        List<Article> articleList = articleMapper.getArticleByCategoryId(id);
-        return formatDate(articleList);
+    public ArticleQueryResp getArticleById(Integer id) {
+        return articleMapper.selectOneById(id);
     }
 
-    public List<Article> getArticleByTagId(int id) {
-        List<Article> articleList = articleMapper.getArticleByTagId(id);
-        return formatDate(articleList);
+    public List<ArticleQueryResp> getArticleByCategoryId(Integer id) {
+        List<Article> articles = articleMapper.selectAllByCategoryId(id);
+        return CopyUtil.copyList(articles, ArticleQueryResp.class);
     }
 
+    public List<ArticleQueryResp> getArticleByTagId(Integer id) {
+        List<Article> articles = articleMapper.selectAllByTagId(id);
+        return CopyUtil.copyList(articles, ArticleQueryResp.class);
+    }
+
+
+    public List<ArticleQueryResp> list() {
+        List<Article> articles = articleMapper.selectAll();
+        return CopyUtil.copyList(articles, ArticleQueryResp.class);
+    }
+
+    public PageResp<ArticleQueryResp> getAllArticleByTitle(ArticleQueryReq req) {
+        int page = req.getPage();
+        int size = req.getSize();
+        List<ArticleQueryResp> articleQueryResps = articleMapper.selectByTitle(page * size, size, req.getTitle());
+        PageResp<ArticleQueryResp> pageResp = new PageResp<>();
+        pageResp.setTotal(articleMapper.countByTitleLike(req.getTitle()));
+        pageResp.setList(articleQueryResps);
+        return pageResp;
+    }
+
+    public CommonResp save(ArticleInsertReq req) {
+        CommonResp resp = new CommonResp();
+        if (req.getId() == -1) {
+            insert(req);
+            resp.setMessage("新增文章成功");
+            return resp;
+        } else {
+            update(req);
+            resp.setMessage("修改文章成功");
+            return resp;
+        }
+    }
+
+    private void update(ArticleInsertReq req) {
+        Article article = new Article();
+        article.setId(req.getId());
+        article.setTitle(req.getTitle());
+        article.setContent(req.getContent());
+        articleMapper.updateByPrimaryKeySelective(article);
+        articleCategoryMapper.deleteByAid(req.getId());
+        ArticleCategory articleCategory = new ArticleCategory();
+        articleCategory.setAid(req.getId());
+        articleCategory.setCid(req.getCategoryId());
+        articleCategoryMapper.insertSelective(articleCategory);
+        articleTagMapper.deleteByAid(req.getId());
+        for (int i = 0; i < req.getTagIdArr().length; i++) {
+            ArticleTag articleTag = new ArticleTag();
+            articleTag.setAid(req.getId());
+            articleTag.setTid(req.getTagIdArr()[i]);
+            articleTagMapper.insertSelective(articleTag);
+        }
+    }
+
+    public void insert(ArticleInsertReq req) {
+        Article article = new Article();
+        article.setTitle(req.getTitle());
+        article.setContent(req.getContent());
+        article.setDate(new Date());
+        articleMapper.insertSelective(article);
+        ArticleCategory articleCategory = new ArticleCategory();
+        articleCategory.setAid(article.getId());
+        articleCategory.setCid(req.getCategoryId());
+        articleCategoryMapper.insertSelective(articleCategory);
+        for (int i = 0; i < req.getTagIdArr().length; i++) {
+            ArticleTag articleTag = new ArticleTag();
+            articleTag.setAid(article.getId());
+            articleTag.setTid(req.getTagIdArr()[i]);
+            articleTagMapper.insertSelective(articleTag);
+        }
+    }
+
+    public void delete(Integer id) {
+        articleCategoryMapper.deleteByAid(id);
+        articleTagMapper.deleteByAid(id);
+        articleMapper.deleteByPrimaryKey(id);
+    }
 }

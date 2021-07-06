@@ -1,10 +1,10 @@
-package com.dkt.blogboot.entity;
+package com.dkt.blogboot.resp;
 
 /**
 *@author 窦康泰
 *@date 2021/07/04
 */
-public class Category {
+public class CategoryQueryResp {
     private Integer id;
 
     private String category;

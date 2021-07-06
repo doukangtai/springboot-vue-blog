@@ -1,18 +1,15 @@
 package com.dkt.blogboot.mapper;
-
 import com.dkt.blogboot.entity.Category;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
-@Author 窦康泰
-@Date 2020-08-04 18:33
+*@author 窦康泰
+*@date 2021/07/04
 */
 @Repository
 public interface CategoryMapper {
-    List<Category> selectAll();
-
     int deleteByPrimaryKey(Integer id);
 
     int insert(Category record);
@@ -25,5 +22,7 @@ public interface CategoryMapper {
 
     int updateByPrimaryKey(Category record);
 
-    List<Category> selectByCategory(String category);
+    List<Category> selectAll();
+
+
 }

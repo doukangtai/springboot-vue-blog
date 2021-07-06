@@ -11,7 +11,7 @@ spring:
 server:
   port: 8081
 mybatis:
-  mapper-locations: classpath:/mybatis/mapper/*.xml
+  mapper-locations: classpath:/mapper/**/*.xml
 
 upload-img-path:
   windows: C:/Users/DKT/Desktop/blog/images/

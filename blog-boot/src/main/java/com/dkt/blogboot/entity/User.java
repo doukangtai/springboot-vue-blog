@@ -1,9 +1,9 @@
 package com.dkt.blogboot.entity;
 
 /**
- * @Author 窦康泰
- * @Date 2020-08-01 12:59
- */
+*@author 窦康泰
+*@date 2021/07/04
+*/
 public class User {
     private Integer id;
 
@@ -12,8 +12,6 @@ public class User {
     private String password;
 
     private String nickname;
-
-    private String role;
 
     public Integer getId() {
         return id;
@@ -45,24 +43,5 @@ public class User {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", nickname='" + nickname + '\'' +
-                ", role='" + role + '\'' +
-                '}';
     }
 }

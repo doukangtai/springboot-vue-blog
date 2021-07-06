@@ -2,42 +2,32 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dkt.blogboot.mapper.UserMapper">
   <resultMap id="BaseResultMap" type="com.dkt.blogboot.entity.User">
-    <!--@mbg.generated-->
     <!--@Table `user`-->
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="nickname" jdbcType="VARCHAR" property="nickname" />
-    <result column="role" jdbcType="VARCHAR" property="role" />
   </resultMap>
   <sql id="Base_Column_List">
-    <!--@mbg.generated-->
     id, username, `password`, nickname
   </sql>
-  <select id="loadUserByUsername" resultMap="BaseResultMap">
-    SELECT *,'ROLE_login' role from user where username=#{username}
-  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    <!--@mbg.generated-->
     select 
     <include refid="Base_Column_List" />
     from `user`
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    <!--@mbg.generated-->
     delete from `user`
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.dkt.blogboot.entity.User" useGeneratedKeys="true">
-    <!--@mbg.generated-->
     insert into `user` (username, `password`, nickname
       )
     values (#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.dkt.blogboot.entity.User" useGeneratedKeys="true">
-    <!--@mbg.generated-->
     insert into `user`
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="username != null">
@@ -63,7 +53,6 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.dkt.blogboot.entity.User">
-    <!--@mbg.generated-->
     update `user`
     <set>
       <if test="username != null">
@@ -79,7 +68,6 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.dkt.blogboot.entity.User">
-    <!--@mbg.generated-->
     update `user`
     set username = #{username,jdbcType=VARCHAR},
       `password` = #{password,jdbcType=VARCHAR},

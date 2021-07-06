@@ -1,8 +1,8 @@
 package com.dkt.blogboot.entity;
 
 /**
-@Author 窦康泰
-@Date 2020-08-05 15:37
+*@author 窦康泰
+*@date 2021/07/04
 */
 public class ArticleTag {
     private Integer id;
@@ -10,23 +10,6 @@ public class ArticleTag {
     private Integer aid;
 
     private Integer tid;
-
-    @Override
-    public String toString() {
-        return "ArticleTag{" +
-                "id=" + id +
-                ", aid=" + aid +
-                ", tid=" + tid +
-                '}';
-    }
-
-    public ArticleTag() {
-    }
-
-    public ArticleTag(Integer aid, Integer tid) {
-        this.aid = aid;
-        this.tid = tid;
-    }
 
     public Integer getId() {
         return id;

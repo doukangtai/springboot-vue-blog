@@ -4,13 +4,11 @@ import com.dkt.blogboot.entity.User;
 import org.springframework.stereotype.Repository;
 
 /**
-@Author 窦康泰
-@Date 2020-08-01 12:59
+*@author 窦康泰
+*@date 2021/07/04
 */
 @Repository
 public interface UserMapper {
-    User loadUserByUsername(String username);
-
     int deleteByPrimaryKey(Integer id);
 
     int insert(User record);
