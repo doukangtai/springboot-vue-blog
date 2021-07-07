@@ -7,13 +7,16 @@
     <result column="title" jdbcType="VARCHAR" property="title" />
     <result column="content" jdbcType="LONGVARCHAR" property="content" />
     <result column="date" jdbcType="TIMESTAMP" property="date" />
+    <result column="view" jdbcType="INTEGER" property="view" />
+    <result column="praise" jdbcType="INTEGER" property="praise" />
   </resultMap>
   <resultMap id="ArticleQueryRespMap" type="com.dkt.blogboot.resp.ArticleQueryResp">
-    <!--@Table article-->
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="title" jdbcType="VARCHAR" property="title" />
     <result column="content" jdbcType="LONGVARCHAR" property="content" />
     <result column="date" jdbcType="TIMESTAMP" property="date" />
+    <result column="view" jdbcType="INTEGER" property="view" />
+    <result column="praise" jdbcType="INTEGER" property="praise" />
     <association property="category" javaType="com.dkt.blogboot.entity.Category">
       <id column="cid" property="id"/>
       <result column="category" property="category"/>
@@ -24,7 +27,7 @@
     </collection>
   </resultMap>
   <sql id="Base_Column_List">
-    id, title, content, `date`
+    id, title, content, `date`, `view`, praise
   </sql>
   <sql id="ArticleQueryResp_Column_List">
     a.*,t.id tid,t.tag tag,c.id cid,c.category category
@@ -40,9 +43,9 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.dkt.blogboot.entity.Article" useGeneratedKeys="true">
-    insert into article (title, content, `date`
+    insert into article (title, content, `date`, `view`, praise
       )
-    values (#{title,jdbcType=VARCHAR}, #{content,jdbcType=LONGVARCHAR}, #{date,jdbcType=TIMESTAMP}
+    values (#{title,jdbcType=VARCHAR}, #{content,jdbcType=LONGVARCHAR}, #{date,jdbcType=TIMESTAMP}, #{view,jdbcType=INTEGER}, #{praise,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.dkt.blogboot.entity.Article" useGeneratedKeys="true">
@@ -57,6 +60,12 @@
       <if test="date != null">
         `date`,
       </if>
+      <if test="view != null">
+        `view`,
+      </if>
+      <if test="praise != null">
+        praise,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="title != null">
@@ -67,6 +76,12 @@
       </if>
       <if test="date != null">
         #{date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="view != null">
+        #{view,jdbcType=INTEGER},
+      </if>
+      <if test="praise != null">
+        #{praise,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -82,6 +97,12 @@
       <if test="date != null">
         `date` = #{date,jdbcType=TIMESTAMP},
       </if>
+      <if test="view != null">
+        `view` = #{view,jdbcType=INTEGER},
+      </if>
+      <if test="praise != null">
+        praise = #{praise,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -89,7 +110,9 @@
     update article
     set title = #{title,jdbcType=VARCHAR},
       content = #{content,jdbcType=LONGVARCHAR},
-      `date` = #{date,jdbcType=TIMESTAMP}
+      `date` = #{date,jdbcType=TIMESTAMP},
+      `view` = #{view,jdbcType=INTEGER},
+      praise = #{praise,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 

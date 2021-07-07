@@ -50,32 +50,4 @@ public class CategoryService {
         }
         return resp;
     }
-//
-//    public ResponseBean insert(Category record) {
-//        if ("".equals(record.getCategory()) || record.getCategory() == null) {
-//            return new ResponseBean("error", "分类不能为空");
-//        }
-//        List<Category> categories = categoryMapper.selectByCategory(record.getCategory());
-//        if (categories.size() > 0) {
-//            return new ResponseBean("error", "此分类存在，添加失败");
-//        }
-//        int insert = categoryMapper.insert(record);
-//        if (insert == 1) {
-//            return new ResponseBean("success", "添加分类成功");
-//        }
-//        return new ResponseBean("error", "添加分类失败");
-//    }
-//
-//    public ResponseBean deleteCategory(int cid) {
-//        List<ArticleCategory> articleCategories = articleCategoryMapper.selectByCid(cid);
-//        if (articleCategories.size() <= 0) {
-//            int i = categoryMapper.deleteByPrimaryKey(cid);
-//            if (i > 0) {
-//                return new ResponseBean("success", "删除分类成功");
-//            } else {
-//                return new ResponseBean("error", "未知错误，失败");
-//            }
-//        }
-//        return new ResponseBean("error", "有使用此分类的文章，删除失败");
-//    }
 }

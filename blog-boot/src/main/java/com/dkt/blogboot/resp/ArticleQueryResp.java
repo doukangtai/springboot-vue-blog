@@ -21,6 +21,10 @@ public class ArticleQueryResp {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date date;
 
+    private Integer view;
+
+    private Integer praise;
+
     private Category category;
 
     private List<Tag> tags;
@@ -55,6 +59,22 @@ public class ArticleQueryResp {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Integer getView() {
+        return view;
+    }
+
+    public void setView(Integer view) {
+        this.view = view;
+    }
+
+    public Integer getPraise() {
+        return praise;
+    }
+
+    public void setPraise(Integer praise) {
+        this.praise = praise;
     }
 
     public Category getCategory() {

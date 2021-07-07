@@ -10,6 +10,7 @@ import com.dkt.blogboot.service.CategoryService;
 import com.dkt.blogboot.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,9 +39,11 @@ public class ArticleController {
     String uploadImgPathWindows;
     @Value("${upload-img-path.linux}")
     String uploadImgPathLinux;
+    @Autowired
+    RedisTemplate redisTemplate;
 
     @GetMapping("/list/substring")
-    public CommonResp listSubstringContent(@Valid @RequestBody ArticleQueryReq req) {
+    public CommonResp listSubstringContent(@Valid ArticleQueryReq req) {
         CommonResp<PageResp<ArticleQueryResp>> resp = new CommonResp<>();
         PageResp<ArticleQueryResp> pageResp = articleService.listSubstringContent(req);
         resp.setContent(pageResp);
@@ -79,7 +82,7 @@ public class ArticleController {
     }
 
     @GetMapping("/title")
-    public CommonResp getAllArticleByTitle(@Valid @RequestBody ArticleQueryReq req) {
+    public CommonResp getAllArticleByTitle(@Valid ArticleQueryReq req) {
         PageResp<ArticleQueryResp> pageResp = articleService.getAllArticleByTitle(req);
         CommonResp<PageResp<ArticleQueryResp>> resp = new CommonResp<>();
         resp.setContent(pageResp);
@@ -127,5 +130,14 @@ public class ArticleController {
         }
     }
 
-
+    /**
+     * 点赞
+     * @param request
+     * @param id
+     * @return
+     */
+    @GetMapping("/praise/{id}")
+    public CommonResp praiseArticle(HttpServletRequest request, @PathVariable("id") Integer id) {
+        return articleService.praiseArticle(request, id);
+    }
 }
