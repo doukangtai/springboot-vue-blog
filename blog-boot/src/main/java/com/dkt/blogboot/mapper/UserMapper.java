@@ -1,7 +1,9 @@
 package com.dkt.blogboot.mapper;
-
 import com.dkt.blogboot.entity.User;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
 *@author 窦康泰
@@ -20,4 +22,8 @@ public interface UserMapper {
     int updateByPrimaryKeySelective(User record);
 
     int updateByPrimaryKey(User record);
+
+    List<User> selectByUsername(@Param("username")String username);
+
+
 }

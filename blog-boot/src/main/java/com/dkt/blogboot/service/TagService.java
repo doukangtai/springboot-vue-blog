@@ -8,12 +8,15 @@ import com.dkt.blogboot.req.TagInsertReq;
 import com.dkt.blogboot.resp.CommonResp;
 import com.dkt.blogboot.resp.TagQueryResp;
 import com.dkt.blogboot.util.CopyUtil;
+import com.dkt.blogboot.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author 窦康泰
@@ -27,15 +30,25 @@ public class TagService {
     TagMapper tagMapper;
     @Autowired
     ArticleTagMapper articleTagMapper;
+    @Autowired
+    RedisTemplate redisTemplate;
 
     public List<TagQueryResp> selectAll() {
+        String key = RedisUtil.PREFIX + "selectAll::List<TagQueryResp>";
+        List<TagQueryResp> result = (List<TagQueryResp>) redisTemplate.opsForValue().get(key);
+        if (result != null) {
+            return result;
+        }
         List<Tag> tags = tagMapper.selectAll();
-        return CopyUtil.copyList(tags, TagQueryResp.class);
+        List<TagQueryResp> tagQueryResps = CopyUtil.copyList(tags, TagQueryResp.class);
+        redisTemplate.opsForValue().set(key, tagQueryResps, 30, TimeUnit.MINUTES);
+        return tagQueryResps;
     }
 
     public void insert(TagInsertReq req) {
         Tag tag = CopyUtil.copy(req, Tag.class);
         tagMapper.insertSelective(tag);
+        RedisUtil.invalidation(redisTemplate);
     }
 
     public CommonResp delete(Integer id) {
@@ -48,6 +61,7 @@ public class TagService {
             resp.setSuccess(false);
             resp.setMessage("标签有使用，删除失败");
         }
+        RedisUtil.invalidation(redisTemplate);
         return resp;
     }
 }

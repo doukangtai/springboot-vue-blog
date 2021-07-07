@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author 窦康泰
@@ -47,6 +48,11 @@ public class ArticleService {
     RedisTemplate redisTemplate;
 
     public PageResp<ArticleQueryResp> listSubstringContent(ArticleQueryReq req) {
+        String key = getKeyListSubstringContent(req);
+        PageResp<ArticleQueryResp> result = (PageResp<ArticleQueryResp>) redisTemplate.opsForValue().get(key);
+        if (result != null) {
+            return result;
+        }
         int page = req.getPage();
         int size = req.getSize();
         List<ArticleQueryResp> articles = articleMapper.select(page * size, size);
@@ -58,10 +64,20 @@ public class ArticleService {
         PageResp<ArticleQueryResp> pageResp = new PageResp<>();
         pageResp.setTotal(articleMapper.count());
         pageResp.setList(articles);
+        redisTemplate.opsForValue().set(key, pageResp, 30, TimeUnit.MINUTES);
         return pageResp;
     }
 
+    private String getKeyListSubstringContent(ArticleQueryReq req) {
+        return RedisUtil.PREFIX + req.getTitle() + "::" + req.getSize() + "::" + req.getPage();
+    }
+
     public ArticleQueryResp getArticleById(Integer id) {
+        String key = RedisUtil.PREFIX + "getArticleById::" + id;
+        ArticleQueryResp result = (ArticleQueryResp) redisTemplate.opsForValue().get(key);
+        if (result != null) {
+            return result;
+        }
         ArticleQueryResp articleQueryResp = articleMapper.selectOneById(id);
 //        long timeBlock = System.currentTimeMillis() / (1000 * 60 * 5);
         long timeBlock = System.currentTimeMillis() / 1000;
@@ -78,32 +94,60 @@ public class ArticleService {
                 map.put(id, val + 1);
             }
         }
+        redisTemplate.opsForValue().set(key, articleQueryResp, 30, TimeUnit.MINUTES);
         return articleQueryResp;
     }
 
     public List<ArticleQueryResp> getArticleByCategoryId(Integer id) {
+        String key = RedisUtil.PREFIX + "getArticleByCategoryId::" + id;
+        List<ArticleQueryResp> result = (List<ArticleQueryResp>) redisTemplate.opsForValue().get(key);
+        if (result != null) {
+            return result;
+        }
         List<Article> articles = articleMapper.selectAllByCategoryId(id);
-        return CopyUtil.copyList(articles, ArticleQueryResp.class);
+        List<ArticleQueryResp> articleQueryResps = CopyUtil.copyList(articles, ArticleQueryResp.class);
+        redisTemplate.opsForValue().set(key, articleQueryResps, 30, TimeUnit.MINUTES);
+        return articleQueryResps;
     }
 
     public List<ArticleQueryResp> getArticleByTagId(Integer id) {
+        String key = RedisUtil.PREFIX + "getArticleByTagId::" + id;
+        List<ArticleQueryResp> result = (List<ArticleQueryResp>) redisTemplate.opsForValue().get(key);
+        if (result != null) {
+            return result;
+        }
         List<Article> articles = articleMapper.selectAllByTagId(id);
-        return CopyUtil.copyList(articles, ArticleQueryResp.class);
+        List<ArticleQueryResp> articleQueryResps = CopyUtil.copyList(articles, ArticleQueryResp.class);
+        redisTemplate.opsForValue().set(key, articleQueryResps, 30, TimeUnit.MINUTES);
+        return articleQueryResps;
     }
 
 
     public List<ArticleQueryResp> list() {
+        String key = RedisUtil.PREFIX + "list::List<ArticleQueryResp>";
+        List<ArticleQueryResp> result = (List<ArticleQueryResp>) redisTemplate.opsForValue().get(key);
+        if (result != null) {
+            return result;
+        }
         List<Article> articles = articleMapper.selectAll();
-        return CopyUtil.copyList(articles, ArticleQueryResp.class);
+        List<ArticleQueryResp> articleQueryResps = CopyUtil.copyList(articles, ArticleQueryResp.class);
+        redisTemplate.opsForValue().set(key, articleQueryResps, 30, TimeUnit.MINUTES);
+        return articleQueryResps;
     }
 
     public PageResp<ArticleQueryResp> getAllArticleByTitle(ArticleQueryReq req) {
+        String key = getKeyListSubstringContent(req);
+        PageResp<ArticleQueryResp> result = (PageResp<ArticleQueryResp>) redisTemplate.opsForValue().get(key);
+        if (result != null) {
+            return result;
+        }
         int page = req.getPage();
         int size = req.getSize();
         List<ArticleQueryResp> articleQueryResps = articleMapper.selectByTitle(page * size, size, req.getTitle());
         PageResp<ArticleQueryResp> pageResp = new PageResp<>();
         pageResp.setTotal(articleMapper.countByTitleLike(req.getTitle()));
         pageResp.setList(articleQueryResps);
+        redisTemplate.opsForValue().set(key, pageResp, 30, TimeUnit.MINUTES);
         return pageResp;
     }
 
@@ -112,12 +156,12 @@ public class ArticleService {
         if (req.getId() == -1) {
             insert(req);
             resp.setMessage("新增文章成功");
-            return resp;
         } else {
             update(req);
             resp.setMessage("修改文章成功");
-            return resp;
         }
+        RedisUtil.invalidation(redisTemplate);
+        return resp;
     }
 
     private void update(ArticleInsertReq req) {
@@ -164,6 +208,7 @@ public class ArticleService {
         articleCategoryMapper.deleteByAid(id);
         articleTagMapper.deleteByAid(id);
         articleMapper.deleteByPrimaryKey(id);
+        RedisUtil.invalidation(redisTemplate);
     }
 
     private String getRemoteIp(HttpServletRequest request) {

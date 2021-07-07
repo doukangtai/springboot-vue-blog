@@ -26,8 +26,8 @@ public class ViewJob {
     RedisTemplate redisTemplate;
 
 //    @Scheduled(cron = "0 5/5 * * * ?")
-    @Scheduled(cron = "0/3 * * * * ?")
-    public void transToDb() {
+    @Scheduled(cron = "0 1/1 * * * ?")
+    public void transToRedis() {
 //        long timeBlock = System.currentTimeMillis() / (1000 * 60 * 5);
         long timeBlock = System.currentTimeMillis() / 1000;
         Iterator<Long> iterator = RedisUtil.VIEW_MAP.keySet().iterator();

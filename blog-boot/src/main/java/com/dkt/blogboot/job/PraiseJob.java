@@ -26,7 +26,7 @@ public class PraiseJob {
     RedisTemplate redisTemplate;
 
 //    @Scheduled(cron = "0 0 2 1/1 * ?")
-    @Scheduled(cron = "0/10 * * * * ?")
+    @Scheduled(cron = "0 0 1/1 * * ?")
     public void transToDb() {
         List<Article> articles = articleMapper.selectAll();
         for (Article article : articles) {
@@ -44,5 +44,6 @@ public class PraiseJob {
             redisTemplate.delete(praiseKey);
             redisTemplate.delete(RedisUtil.VIEW + article.getId());
         }
+        RedisUtil.invalidation(redisTemplate);
     }
 }

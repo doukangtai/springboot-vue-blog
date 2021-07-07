@@ -1,9 +1,12 @@
 package com.dkt.blogboot.config;
 
+import com.dkt.blogboot.interceptor.LoginInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -19,6 +22,9 @@ public class WebConfig implements WebMvcConfigurer {
     String uploadImgPathWindows;
     @Value("${upload-img-path.linux}")
     String uploadImgPathLinux;
+
+    @Autowired
+    LoginInterceptor loginInterceptor;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -40,26 +46,20 @@ public class WebConfig implements WebMvcConfigurer {
                 .maxAge(3600); // 1小时内不需要再预检（发OPTIONS请求）
     }
 
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(loginInterceptor)
-//                .addPathPatterns("/**")
-//                .excludePathPatterns(
-//                        "/test/**",
-//                        "/redis/**",
-//                        "/user/login",
-//                        "/category/all",
-//                        "/ebook/list",
-//                        "/doc/all/**",
-//                        "/doc/vote/**",
-//                        "/doc/find-content/**",
-//                        "/ebook-snapshot/**"
-//                );
-//
-//        registry.addInterceptor(actionInterceptor)
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(loginInterceptor)
+                .addPathPatterns("/**")
+        .excludePathPatterns("/user/**");
+
 //                .addPathPatterns(
-//                        "/*/save",
-//                        "/*/delete/**",
-//                        "/*/reset-password");
-//    }
+//                        "/article/insert/**",
+//                        "/article/delete/**",
+//                        "/article/upload/**",
+//                        "/category/add/**",
+//                        "/category/delete/**",
+//                        "/tag/add/**",
+//                        "/tag/delete/**"
+//                );
+    }
 }
