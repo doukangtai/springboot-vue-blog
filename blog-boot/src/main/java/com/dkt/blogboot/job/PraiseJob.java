@@ -26,7 +26,7 @@ public class PraiseJob {
     RedisTemplate redisTemplate;
 
 //    @Scheduled(cron = "0 0 2 1/1 * ?")
-    @Scheduled(cron = "0 0 1/1 * * ?")
+    @Scheduled(cron = "0 0 1/3 * * ?")
     public void transToDb() {
         List<Article> articles = articleMapper.selectAll();
         for (Article article : articles) {

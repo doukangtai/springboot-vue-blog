@@ -11,9 +11,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RedisUtil {
     public static final String PREFIX = "BOOTBLOG::";
 
-    public static final String PRAISE = PREFIX + "praise::";
+    public static final String PRAISE = "praise::" + PREFIX;
 
-    public static final String VIEW = PREFIX + "view::";
+    public static final String VIEW = "view::" + PREFIX;
 
     public static final Map<Long, Map<Integer, Integer>> VIEW_MAP = new ConcurrentHashMap<>();
 

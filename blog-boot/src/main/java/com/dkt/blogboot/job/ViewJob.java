@@ -2,8 +2,6 @@ package com.dkt.blogboot.job;
 
 import com.dkt.blogboot.mapper.ArticleMapper;
 import com.dkt.blogboot.util.RedisUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,18 +16,16 @@ import java.util.Map;
  */
 @Component
 public class ViewJob {
-    private final static Logger log = LoggerFactory.getLogger(ViewJob.class);
-
     @Autowired
     ArticleMapper articleMapper;
     @Autowired
     RedisTemplate redisTemplate;
 
 //    @Scheduled(cron = "0 5/5 * * * ?")
-    @Scheduled(cron = "0 1/1 * * * ?")
+    @Scheduled(cron = "1/10 * * * * ?")
     public void transToRedis() {
-//        long timeBlock = System.currentTimeMillis() / (1000 * 60 * 5);
-        long timeBlock = System.currentTimeMillis() / 1000;
+        long timeBlock = System.currentTimeMillis() / (1000 * 60);
+//        long timeBlock = System.currentTimeMillis() / 1000;
         Iterator<Long> iterator = RedisUtil.VIEW_MAP.keySet().iterator();
         while (iterator.hasNext()) {
             Long key = iterator.next();

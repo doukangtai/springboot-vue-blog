@@ -23,9 +23,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -47,10 +45,23 @@ public class ArticleService {
     @Autowired
     RedisTemplate redisTemplate;
 
+    private Integer getViewCountFromRedis(Integer id) {
+        Integer viewCount = (Integer) redisTemplate.opsForValue().get(RedisUtil.VIEW + id);
+        return viewCount == null ? 0 : viewCount;
+    }
+
+    private long getPraiseCountFromRedis(Integer id) {
+        Long size = redisTemplate.opsForSet().size(RedisUtil.PRAISE + id);
+        return size == null ? 0 : size;
+    }
+
     public PageResp<ArticleQueryResp> listSubstringContent(ArticleQueryReq req) {
         String key = getKeyListSubstringContent(req);
         PageResp<ArticleQueryResp> result = (PageResp<ArticleQueryResp>) redisTemplate.opsForValue().get(key);
         if (result != null) {
+            for (ArticleQueryResp articleQueryResp : result.getList()) {
+                addViewAndPraiseCount(articleQueryResp);
+            }
             return result;
         }
         int page = req.getPage();
@@ -65,7 +76,18 @@ public class ArticleService {
         pageResp.setTotal(articleMapper.count());
         pageResp.setList(articles);
         redisTemplate.opsForValue().set(key, pageResp, 30, TimeUnit.MINUTES);
+        for (ArticleQueryResp article : articles) {
+            addViewAndPraiseCount(article);
+        }
         return pageResp;
+    }
+
+    private void addViewAndPraiseCount(ArticleQueryResp articleQueryResp) {
+        Integer articleId = articleQueryResp.getId();
+        Integer viewCountFromRedis = getViewCountFromRedis(articleId);
+        long praiseCountFromRedis = getPraiseCountFromRedis(articleId);
+        articleQueryResp.setView(articleQueryResp.getView() + viewCountFromRedis);
+        articleQueryResp.setPraise((int) (articleQueryResp.getPraise() + praiseCountFromRedis));
     }
 
     private String getKeyListSubstringContent(ArticleQueryReq req) {
@@ -73,14 +95,8 @@ public class ArticleService {
     }
 
     public ArticleQueryResp getArticleById(Integer id) {
-        String key = RedisUtil.PREFIX + "getArticleById::" + id;
-        ArticleQueryResp result = (ArticleQueryResp) redisTemplate.opsForValue().get(key);
-        if (result != null) {
-            return result;
-        }
-        ArticleQueryResp articleQueryResp = articleMapper.selectOneById(id);
-//        long timeBlock = System.currentTimeMillis() / (1000 * 60 * 5);
-        long timeBlock = System.currentTimeMillis() / 1000;
+        long timeBlock = System.currentTimeMillis() / (1000 * 60);
+//        long timeBlock = System.currentTimeMillis() / 1000;
         Map<Integer, Integer> map = RedisUtil.VIEW_MAP.get(timeBlock);
         if (CollectionUtils.isEmpty(map)) {
             map = new ConcurrentHashMap<>();
@@ -94,7 +110,17 @@ public class ArticleService {
                 map.put(id, val + 1);
             }
         }
+        String key = RedisUtil.PREFIX + "getArticleById::" + id;
+        ArticleQueryResp result = (ArticleQueryResp) redisTemplate.opsForValue().get(key);
+        if (result != null) {
+            addViewAndPraiseCount(result);
+            return result;
+        }
+        ArticleQueryResp articleQueryResp = articleMapper.selectOneById(id);
         redisTemplate.opsForValue().set(key, articleQueryResp, 30, TimeUnit.MINUTES);
+        if (articleQueryResp != null) {
+            addViewAndPraiseCount(articleQueryResp);
+        }
         return articleQueryResp;
     }
 
